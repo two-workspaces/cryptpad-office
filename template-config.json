@@ -1,0 +1,44 @@
+{
+  "buckets": {},
+  "services": {
+    "1a576101-9b40-405a-a981-b5a2719600cf": {
+      "icon": "https://raw.githubusercontent.com/cryptpad/cryptpad/main/customize.dist/CryptPad_logo.svg",
+      "name": "CryptPad",
+      "build": { "dockerfilePath": "Dockerfile" },
+      "deploy": {
+        "startCommand": null,
+        "healthcheckPath": "/",
+        "healthcheckTimeout": 300,
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": { "repo": "https://github.com/two-workspaces/cryptpad-office", "rootDirectory": "/" },
+      "variables": {
+        "PORT": { "defaultValue": "3000", "description": "Port the service listens on - leave as is", "isOptional": false },
+        "CRYPTPAD_ORIGIN": { "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}", "description": "Main address. Change it when you add a custom domain", "isOptional": false },
+        "CRYPTPAD_SANDBOX_ORIGIN": { "defaultValue": "https://${{Sandbox.RAILWAY_PUBLIC_DOMAIN}}", "description": "Sandbox address, which isolates documents from your account. Must differ from the main address", "isOptional": false },
+        "CRYPTPAD_INSTALL_TOKEN": { "defaultValue": "${{secret(64, \"abcdef0123456789\")}}", "description": "One-time token that makes you the first admin", "isOptional": false },
+        "CRYPTPAD_ADMIN_SETUP_URL": { "defaultValue": "https://${{RAILWAY_PUBLIC_DOMAIN}}/install/#${{CRYPTPAD_INSTALL_TOKEN}}", "description": "Open this once to create the first admin account", "isOptional": false }
+      },
+      "networking": { "serviceDomains": { "<hasDomain>": {} } },
+      "volumeMounts": { "1a576101-9b40-405a-a981-b5a2719600cf": { "mountPath": "/data" } }
+    },
+    "760e8ff5-6680-4055-9dcf-eea58910498f": {
+      "icon": "https://raw.githubusercontent.com/cryptpad/cryptpad/main/customize.dist/CryptPad_logo_grey.svg",
+      "name": "Sandbox",
+      "build": {},
+      "deploy": {
+        "startCommand": "/bin/sh -c \"exec caddy reverse-proxy --from :$PORT --to http://$CRYPTPAD_UPSTREAM\"",
+        "restartPolicyType": "ON_FAILURE",
+        "restartPolicyMaxRetries": 10
+      },
+      "source": { "image": "caddy:2.11.7-alpine" },
+      "variables": {
+        "PORT": { "defaultValue": "8080", "description": "Port the service listens on - leave as is", "isOptional": false },
+        "CRYPTPAD_UPSTREAM": { "defaultValue": "${{CryptPad.RAILWAY_PRIVATE_DOMAIN}}:${{CryptPad.PORT}}", "description": "CryptPad on the private network - leave as is", "isOptional": false }
+      },
+      "networking": { "serviceDomains": { "<hasDomain>": {} } },
+      "volumeMounts": {}
+    }
+  }
+}

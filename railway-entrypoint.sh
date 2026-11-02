@@ -12,11 +12,18 @@ chown -R cryptpad:cryptpad /data
 
 as_cryptpad() { setpriv --reuid=4001 --regid=4001 --clear-groups env HOME=/cryptpad "$@"; }
 
+# Seeded here rather than left to the server: when it writes the bearer secret itself on a
+# fresh volume, its startup never finishes that boot, so the block store's placeholder and
+# the install link don't appear until a restart.
 decrees=/data/data/decrees/decree.ndjson
-if ! grep -qs ADD_INSTALL_TOKEN "$decrees"; then
+if [ ! -s "$decrees" ]; then
   token="${CRYPTPAD_INSTALL_TOKEN:?CRYPTPAD_INSTALL_TOKEN is not set}"
   [ "${#token}" = 64 ] || { echo "railway: CRYPTPAD_INSTALL_TOKEN must be 64 characters"; exit 1; }
-  echo "[\"ADD_INSTALL_TOKEN\",[\"$token\"],\"\",$(date +%s)000]" >> "$decrees"
+  now="$(date +%s)000"
+  {
+    echo "[\"ADD_INSTALL_TOKEN\",[\"$token\"],\"\",$now]"
+    echo "[\"SET_BEARER_SECRET\",[\"$(head -c 32 /dev/urandom | base64)\"],\"INTERNAL\",$now]"
+  } > "$decrees"
   chown cryptpad:cryptpad "$decrees"
 fi
 

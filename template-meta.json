@@ -4,5 +4,6 @@
   "description": "End-to-end encrypted office suite. Docs, sheets and slides, ready to edit",
   "category": "Other",
   "image": "https://raw.githubusercontent.com/cryptpad/cryptpad/main/customize.dist/CryptPad_logo.svg",
-  "card_desc": "CryptPad with Docs, Sheets and Slides built in, the sandbox domain it needs already wired up, and a private link that makes you the first admin."
+  "card_desc": "CryptPad with Docs, Sheets and Slides built in, the sandbox domain it needs already wired up, and a private link that makes you the first admin.",
+  "id": "ace8cc65-57ec-44d6-a3b0-490dafbf77cc"
 }

@@ -1,5 +1,5 @@
 # upgrade: github cryptpad/cryptpad
-ARG CRYPTPAD_VERSION=2026.10.0
+ARG CRYPTPAD_VERSION=2026.10.1
 FROM cryptpad/cryptpad:version-${CRYPTPAD_VERSION}
 
 # Docs, Sheets and Slides. Baked in so a redeploy never downloads 600 MB again.

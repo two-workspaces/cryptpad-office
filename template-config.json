@@ -32,7 +32,7 @@
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10
       },
-      "source": { "image": "caddy:2.11.7-alpine" },
+      "source": { "image": "caddy:2.11.9-alpine" },
       "variables": {
         "PORT": { "defaultValue": "8080", "description": "Port the service listens on - leave as is", "isOptional": false },
         "CRYPTPAD_UPSTREAM": { "defaultValue": "${{CryptPad.RAILWAY_PRIVATE_DOMAIN}}:${{CryptPad.PORT}}", "description": "CryptPad on the private network - leave as is", "isOptional": false }
